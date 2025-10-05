@@ -85,27 +85,24 @@
             padding: 40px 20px;
         }
 
-        .radio-placeholder {
+        .radio-container {
             background: var(--card-bg);
-            padding: 60px 40px;
+            padding: 40px;
             border-radius: 20px;
             box-shadow: var(--shadow);
-            max-width: 500px;
-            width: 100%;
             text-align: center;
         }
 
-        .placeholder-text {
-            font-size: 1.5em;
+        .radio-title {
+            font-size: 2em;
             color: var(--accent-color);
             margin-bottom: 20px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .coming-soon {
-            font-size: 1.1em;
-            opacity: 0.7;
-            font-weight: 400;
+        .player-frame {
+            border-radius: 5px;
+            border: none;
         }
 
         footer {
@@ -135,17 +132,13 @@
         }
 
         @media (max-width: 768px) {
-            .radio-placeholder {
-                padding: 40px 20px;
+            .radio-container {
+                padding: 30px 20px;
                 margin: 20px;
             }
 
-            .placeholder-text {
-                font-size: 1.3em;
-            }
-
-            .coming-soon {
-                font-size: 1em;
+            .radio-title {
+                font-size: 1.5em;
             }
         }
     </style>
@@ -161,23 +154,45 @@
     </header>
 
     <main>
-<iframe  src="https://player.radioking.io/history-fm/?c=%231e7fcb&c2=%23ffffff&f=v&i=0&p=1&s=0&alb=1&li=1&popup=1&plc=0&h=350&l=undefined&v=2" style="border-radius: 5px; width: 275px; height: 350px; " frameBorder="0" ></iframe><script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>   
+        <div class="radio-container">
+            <div class="radio-title">History FM</div>
+            <iframe src="https://player.radioking.io/history-fm/?c=%231e7fcb&c2=%23ffffff&f=v&i=0&p=1&s=0&alb=1&li=1&popup=1&plc=0&h=350&l=undefined&v=2" style="border-radius: 5px; width: 275px; height: 350px;" frameBorder="0" class="player-frame"></iframe>
+        </div>
     </main>
 
     <footer>
         <p class="copyright">History FM. Все права защищены</p>
     </footer>
 
+    <script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>
+    
     <script>
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            const themeBtn = document.querySelector('.theme-toggle');
-            themeBtn.textContent = document.body.classList.contains('dark-theme') ? 
-                'Светлая тема' : 'Тёмная тема';
+        // Загрузка темы из localStorage
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.querySelector('.theme-toggle').textContent = 'Светлая тема';
+            } else {
+                document.querySelector('.theme-toggle').textContent = 'Тёмная тема';
+            }
         }
 
-        // Инициализация темы
-        document.querySelector('.theme-toggle').textContent = 'Тёмная тема';
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            const themeBtn = document.querySelector('.theme-toggle');
+            
+            if (isDark) {
+                themeBtn.textContent = 'Светлая тема';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeBtn.textContent = 'Тёмная тема';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', loadTheme);
     </script>
 </body>
 </html>
