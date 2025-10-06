@@ -126,6 +126,34 @@
             max-width: 600px;
         }
 
+        .comments-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .comments-main-title {
+            font-size: 1.8em;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .comments-notice {
+            font-size: 0.9em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .policy-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .policy-link:hover {
+            text-decoration: underline;
+        }
+
         .comments-title {
             font-size: 1.5em;
             color: var(--accent-color);
@@ -382,6 +410,10 @@
                 margin-bottom: 20px;
             }
 
+            .comments-main-title {
+                font-size: 1.5em;
+            }
+
             .comments-title {
                 font-size: 1.3em;
                 margin-bottom: 20px;
@@ -412,6 +444,10 @@
             }
 
             .radio-title {
+                font-size: 1.3em;
+            }
+
+            .comments-main-title {
                 font-size: 1.3em;
             }
 
@@ -462,7 +498,13 @@
         </div>
 
         <div class="comments-section">
-            <h3 class="comments-title">Обсуждение</h3>
+            <div class="comments-header">
+                <h2 class="comments-main-title">Комментарии</h2>
+                <p class="comments-notice">
+                    Соблюдайте <a href="/policy.html" class="policy-link">правила сообщества</a> и моральные нормы
+                </p>
+            </div>
+            
             <div class="comment-form">
                 <div class="form-group">
                     <input type="text" class="name-input" placeholder="Ваше имя" id="commentName">
