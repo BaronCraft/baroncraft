@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Радио History FM</title>
+    <title>Политика конфиденциальности</title>
     <link rel="icon" href="Логотип.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -37,6 +37,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            line-height: 1.6;
         }
 
         header {
@@ -66,10 +67,9 @@
             display: flex;
             gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
         }
 
-        .theme-toggle, .tracks-btn, .policy-btn {
+        .theme-toggle, .home-btn {
             background: var(--accent-color);
             color: white;
             border: none;
@@ -78,150 +78,47 @@
             cursor: pointer;
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
 
-        .theme-toggle:hover, .tracks-btn:hover, .policy-btn:hover {
+        .theme-toggle:hover, .home-btn:hover {
             transform: scale(1.05);
-            opacity: 0.9;
         }
 
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            gap: 40px;
+        .policy-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
         }
 
-        .radio-container {
+        .policy-title {
+            font-size: 2.5em;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+
+        .policy-content {
             background: var(--card-bg);
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .radio-title {
-            font-size: 2em;
-            color: var(--accent-color);
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .player-frame {
-            border-radius: 5px;
-            border: none;
-            margin-bottom: 20px;
-        }
-
-        .tracks-widget {
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid #eee;
-        }
-
-        .top-tracks-section {
-            background: var(--card-bg);
-            padding: 30px;
             border-radius: 15px;
             box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 600px;
-            display: none;
-        }
-
-        .top-tracks-section.active {
-            display: block;
-        }
-
-        .top-tracks-title {
-            font-size: 1.5em;
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .policy-modal {
-            background: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-            max-width: 800px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .modal-header {
-            padding: 25px 30px 15px;
-            border-bottom: 2px solid var(--accent-color);
-            position: sticky;
-            top: 0;
-            background: var(--card-bg);
-            z-index: 10;
-        }
-
-        .modal-title {
-            font-size: 2em;
-            color: var(--accent-color);
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            padding: 30px;
             font-size: 16px;
-            line-height: 1.6;
         }
 
         .policy-section {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .policy-section h2 {
             color: var(--accent-color);
-            font-size: 1.3em;
+            font-size: 1.4em;
             margin-bottom: 15px;
             font-weight: 600;
             border-left: 4px solid var(--accent-color);
@@ -273,64 +170,42 @@
             header {
                 margin-bottom: 20px;
                 padding: 15px;
+                flex-direction: column;
+                gap: 15px;
             }
 
             .nav-buttons {
-                gap: 10px;
+                width: 100%;
+                justify-content: center;
             }
 
-            .theme-toggle, .tracks-btn, .policy-btn {
-                padding: 8px 15px;
-                font-size: 0.9em;
+            .policy-title {
+                font-size: 2em;
             }
 
-            main {
-                padding: 30px 15px;
-                gap: 30px;
-            }
-
-            .radio-container, .top-tracks-section {
+            .policy-content {
                 padding: 30px 20px;
             }
 
-            .radio-title {
-                font-size: 1.5em;
-                margin-bottom: 20px;
-            }
-
-            .modal-header {
-                padding: 20px 25px 15px;
-            }
-
-            .modal-title {
-                font-size: 1.7em;
-            }
-
-            .modal-content {
-                padding: 25px;
+            footer {
+                margin-top: 30px;
+                padding: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .radio-container, .top-tracks-section {
+            .policy-title {
+                font-size: 1.7em;
+            }
+
+            .policy-content {
                 padding: 25px 15px;
-            }
-
-            .radio-title {
-                font-size: 1.3em;
-            }
-
-            .modal-header {
-                padding: 15px 20px 10px;
-            }
-
-            .modal-title {
-                font-size: 1.5em;
-            }
-
-            .modal-content {
-                padding: 20px;
                 font-size: 15px;
+            }
+
+            .theme-toggle, .home-btn {
+                padding: 8px 16px;
+                font-size: 0.9em;
             }
         }
     </style>
@@ -341,8 +216,7 @@
             <img src="/Логотип.png" alt="History FM" class="logo">
         </a>
         <div class="nav-buttons">
-            <button class="tracks-btn" onclick="toggleTopTracks()">Лучшие треки</button>
-            <button class="policy-btn" onclick="openPolicyModal()">Политика</button>
+            <a href="/" class="home-btn">Вернуться на главную</a>
             <button class="theme-toggle" onclick="toggleTheme()">
                 Сменить тему
             </button>
@@ -350,32 +224,10 @@
     </header>
 
     <main>
-        <div class="radio-container">
-            <div class="radio-title">History FM</div>
-            <iframe src="https://player.radioking.io/history-fm/?c=%231e7fcb&c2=%23ffffff&f=v&i=0&p=1&s=0&alb=1&li=0&popup=0&plc=0&h=350&l=undefined&v=2" style="border-radius: 5px; width: 275px; height: 350px; " frameBorder="0" class="player-frame"></iframe>
-            <script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>
+        <div class="policy-container">
+            <h1 class="policy-title">Политика конфиденциальности (правила) сервиса History FM</h1>
             
-            <div class="tracks-widget">
-                <div id="rk-played-tracks-widget" data-id="history-fm" data-count="5" data-date="0" data-buy="0"></div>
-                <script type="text/javascript" src="https://widget.radioking.io/played-tracks/build/script.min.js"></script>
-            </div>
-        </div>
-
-        <div class="top-tracks-section" id="topTracksSection">
-            <h3 class="top-tracks-title">Лучшие треки</h3>
-            <div id="rk-top-tracks-widget" data-id="history-fm" data-buy="0" data-count="5"></div>
-            <script type="text/javascript" src="https://widget.radioking.io/top-tracks/build/script.min.js"></script>
-        </div>
-    </main>
-
-    <!-- Модальное окно политики конфиденциальности -->
-    <div class="modal-overlay" id="policyModal">
-        <div class="policy-modal">
-            <div class="modal-header">
-                <h2 class="modal-title">Политика конфиденциальности (правила) сервиса History FM</h2>
-                <button class="modal-close" onclick="closePolicyModal()">×</button>
-            </div>
-            <div class="modal-content">
+            <div class="policy-content">
                 <div class="policy-section">
                     <h2>1. Общие положения</h2>
                     <p>Настоящая Политика конфиденциальности определяет порядок обработки и защиты информации о пользователях, которую может получить сервис History FM при использовании ими радиостанции и сопутствующих услуг.</p>
@@ -439,14 +291,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
         <p class="copyright">History FM. Все права защищены</p>
     </footer>
 
-    <script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>
-    
     <script>
         // Загрузка темы из localStorage
         function loadTheme() {
@@ -469,46 +319,6 @@
             } else {
                 themeBtn.textContent = 'Тёмная тема';
                 localStorage.setItem('theme', 'light');
-            }
-        }
-
-        // Открытие/закрытие модального окна политики
-        function openPolicyModal() {
-            document.getElementById('policyModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePolicyModal() {
-            document.getElementById('policyModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Закрытие модального окна по клику вне его
-        document.getElementById('policyModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePolicyModal();
-            }
-        });
-
-        // Закрытие модального окна по Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePolicyModal();
-            }
-        });
-
-        // Переключение блока лучших треков
-        function toggleTopTracks() {
-            const tracksSection = document.getElementById('topTracksSection');
-            tracksSection.classList.toggle('active');
-            
-            // Перезагрузка виджета при открытии
-            if (tracksSection.classList.contains('active')) {
-                setTimeout(() => {
-                    if (typeof window.RKTopTracksWidget !== 'undefined') {
-                        window.RKTopTracksWidget.init();
-                    }
-                }, 100);
             }
         }
 
