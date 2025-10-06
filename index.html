@@ -91,6 +91,7 @@
             border-radius: 20px;
             box-shadow: var(--shadow);
             text-align: center;
+            margin-bottom: 40px;
         }
 
         .radio-title {
@@ -103,6 +104,79 @@
         .player-frame {
             border-radius: 5px;
             border: none;
+        }
+
+        .comments-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .comments-title {
+            font-size: 1.5em;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .comment-form {
+            margin-bottom: 30px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .comment-submit {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .comment-submit:hover {
+            opacity: 0.9;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            line-height: 1.4;
         }
 
         footer {
@@ -132,13 +206,17 @@
         }
 
         @media (max-width: 768px) {
-            .radio-container {
+            .radio-container, .comments-section {
                 padding: 30px 20px;
                 margin: 20px;
             }
 
             .radio-title {
                 font-size: 1.5em;
+            }
+
+            .comments-title {
+                font-size: 1.3em;
             }
         }
     </style>
@@ -156,8 +234,24 @@
     <main>
         <div class="radio-container">
             <div class="radio-title">History FM</div>
-<iframe  src="https://player.radioking.io/history-fm/?c=%231e7fcb&c2=%23ffffff&f=v&i=0&p=1&s=0&alb=1&li=0&popup=0&plc=0&h=350&l=undefined&v=2" style="border-radius: 5px; width: 275px; height: 350px; " frameBorder="0" ></iframe><script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>        </div>
-<div id="rk-played-tracks-widget" data-id="history-fm" data-count="5" data-date="0" data-buy="0"></div><script type="text/javascript" src="https://widget.radioking.io/played-tracks/build/script.min.js"></script>    </main>
+            <iframe src="https://player.radioking.io/history-fm/?c=%231e7fcb&c2=%23ffffff&f=v&i=0&p=1&s=0&alb=1&li=0&popup=0&plc=0&h=350&l=undefined&v=2" style="border-radius: 5px; width: 275px; height: 350px; " frameBorder="0"></iframe>
+            <script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>
+        </div>
+        
+        <div id="rk-played-tracks-widget" data-id="history-fm" data-count="5" data-date="0" data-buy="0"></div>
+        <script type="text/javascript" src="https://widget.radioking.io/played-tracks/build/script.min.js"></script>
+
+        <div class="comments-section">
+            <h3 class="comments-title">Обсуждение</h3>
+            <div class="comment-form">
+                <textarea class="comment-input" placeholder="Оставьте ваш комментарий..." id="commentText"></textarea>
+                <button class="comment-submit" onclick="addComment()">Отправить</button>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <!-- Комментарии будут добавляться здесь -->
+            </div>
+        </div>
+    </main>
 
     <footer>
         <p class="copyright">History FM. Все права защищены</p>
@@ -190,9 +284,53 @@
             }
         }
 
+        // Система комментариев
+        function loadComments() {
+            const savedComments = localStorage.getItem('radioComments');
+            if (savedComments) {
+                document.getElementById('commentsList').innerHTML = savedComments;
+            }
+        }
+
+        function addComment() {
+            const commentText = document.getElementById('commentText').value.trim();
+            if (!commentText) return;
+
+            const commentsList = document.getElementById('commentsList');
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment';
+            
+            const authorName = 'Слушатель'; // Можно добавить систему имен
+            const timestamp = new Date().toLocaleString();
+            
+            commentDiv.innerHTML = `
+                <div class="comment-author">${authorName}</div>
+                <div class="comment-text">${commentText}</div>
+                <div style="font-size: 0.8em; opacity: 0.7; margin-top: 5px;">${timestamp}</div>
+            `;
+            
+            commentsList.appendChild(commentDiv);
+            document.getElementById('commentText').value = '';
+            
+            // Сохраняем комментарии в localStorage
+            localStorage.setItem('radioComments', commentsList.innerHTML);
+        }
+
+        // Обработка отправки по Enter
+        document.getElementById('commentText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                addComment();
+            }
+        });
+
         // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', loadTheme);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            loadComments();
+        });
     </script>
-    <!-- LEADTEX widget --><script type="text/javascript">(function(w,d,s,l){w[l]=w[l]||[];w[l].push({'c':'eyJhcGlVcmwiOiJodHRwczovL2FwcC5sZWFkdGVoLnJ1L2FwaS93aWRnZXQvMWNhMDk2YzctZmEyNS00MDIxLWIxMWUtODFlMGI2N2JhY2ZmIiwiYnJhbmQiOnsibmFtZSI6IkxFQURURVgiLCJ1cmwiOiJodHRwczovL2xlYWR0ZWgucnUifX0='});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://app.leadteh.ru/js/widget.js';f.parentNode.insertBefore(j,f);})(window,document,'script','wbt');</script><!-- /LEADTEX widget -->
+    <!-- LEADTEX widget -->
+    <script type="text/javascript">(function(w,d,s,l){w[l]=w[l]||[];w[l].push({'c':'eyJhcGlVcmwiOiJodHRwczovL2FwcC5sZWFkdGVoLnJ1L2FwaS93aWRnZXQvMWNhMDk2YzctZmEyNS00MDIxLWIxMWUtODFlMGI2N2JhY2ZmIiwiYnJhbmQiOnsibmFtZSI6IkxFQURURVgiLCJ1cmwiOiJodHRwczovL2xlYWR0ZWgucnUifX0='});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://app.leadteh.ru/js/widget.js';f.parentNode.insertBefore(j,f);})(window,document,'script','wbt');</script>
+    <!-- /LEADTEX widget -->
 </body>
 </html>
