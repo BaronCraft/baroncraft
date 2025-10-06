@@ -206,23 +206,94 @@
             transform: translateX(5px);
         }
 
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
         .comment-author {
             font-weight: 600;
             color: var(--accent-color);
-            margin-bottom: 8px;
             font-size: 1.1em;
-        }
-
-        .comment-text {
-            line-height: 1.5;
-            color: var(--text-color);
-            margin-bottom: 10px;
         }
 
         .comment-date {
             font-size: 0.8em;
             opacity: 0.7;
-            margin-top: 8px;
+        }
+
+        .comment-text {
+            line-height: 1.5;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .reply-btn {
+            background: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .reply-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .replies {
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 2px solid var(--accent-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reply {
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .dark-theme .reply {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .reply-form {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .reply-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            resize: vertical;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .reply-submit {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9em;
         }
 
         .pagination {
@@ -329,6 +400,10 @@
                 margin-top: 30px;
                 padding: 20px;
             }
+
+            .replies {
+                padding-left: 15px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -355,6 +430,11 @@
             .page-btn {
                 padding: 6px 12px;
                 font-size: 0.9em;
+            }
+
+            .comment-header {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
@@ -413,6 +493,7 @@
         let currentPage = 1;
         const commentsPerPage = 10;
         let allComments = [];
+        let replyingTo = null;
 
         // Загрузка темы из localStorage
         function loadTheme() {
@@ -474,13 +555,33 @@
             const pageComments = allComments.slice(startIndex, endIndex);
             
             // Добавляем комментарии на страницу
-            pageComments.forEach(comment => {
+            pageComments.forEach((comment, index) => {
                 const commentDiv = document.createElement('div');
                 commentDiv.className = 'comment';
                 commentDiv.innerHTML = `
-                    <div class="comment-author">${comment.name}</div>
+                    <div class="comment-header">
+                        <div class="comment-author">${comment.name}</div>
+                        <div class="comment-date">${comment.date}</div>
+                    </div>
                     <div class="comment-text">${comment.text}</div>
-                    <div class="comment-date">${comment.date}</div>
+                    <button class="reply-btn" onclick="showReplyForm(${startIndex + index})">Ответить</button>
+                    ${comment.replies && comment.replies.length > 0 ? `
+                        <div class="replies">
+                            ${comment.replies.map(reply => `
+                                <div class="reply">
+                                    <div class="comment-header">
+                                        <div class="comment-author">${reply.name}</div>
+                                        <div class="comment-date">${reply.date}</div>
+                                    </div>
+                                    <div class="comment-text">${reply.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="reply-form" id="replyForm-${startIndex + index}">
+                        <textarea class="reply-input" placeholder="Ваш ответ..." id="replyText-${startIndex + index}"></textarea>
+                        <button class="reply-submit" onclick="addReply(${startIndex + index})">Отправить ответ</button>
+                    </div>
                 `;
                 commentsList.appendChild(commentDiv);
             });
@@ -512,6 +613,57 @@
             }
         }
 
+        // Показать форму ответа
+        function showReplyForm(commentIndex) {
+            // Скрываем все формы ответов
+            document.querySelectorAll('.reply-form').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            // Показываем нужную форму
+            const replyForm = document.getElementById(`replyForm-${commentIndex}`);
+            if (replyForm) {
+                replyForm.style.display = 'block';
+                replyingTo = commentIndex;
+            }
+        }
+
+        // Добавление ответа
+        function addReply(commentIndex) {
+            const replyText = document.getElementById(`replyText-${commentIndex}`).value.trim();
+            const userName = document.getElementById('commentName').value.trim();
+            
+            if (!userName) {
+                alert('Пожалуйста, введите ваше имя');
+                return;
+            }
+            
+            if (!replyText) {
+                alert('Пожалуйста, введите ответ');
+                return;
+            }
+
+            // Создаем новый ответ
+            const newReply = {
+                name: userName,
+                text: replyText,
+                date: new Date().toLocaleString()
+            };
+
+            // Добавляем ответ к комментарию
+            if (!allComments[commentIndex].replies) {
+                allComments[commentIndex].replies = [];
+            }
+            allComments[commentIndex].replies.push(newReply);
+            
+            // Сохраняем и отображаем
+            saveComments();
+            displayCurrentPage();
+            
+            // Скрываем форму ответа
+            document.getElementById(`replyForm-${commentIndex}`).style.display = 'none';
+        }
+
         // Добавление комментария
         function addComment() {
             const commentName = document.getElementById('commentName').value.trim();
@@ -534,7 +686,8 @@
             const newComment = {
                 name: commentName,
                 text: commentText,
-                date: new Date().toLocaleString()
+                date: new Date().toLocaleString(),
+                replies: []
             };
 
             // Добавляем комментарий в начало массива
@@ -552,9 +705,19 @@
         }
 
         // Обработка отправки по Enter
-        document.getElementById('commentText').addEventListener('keypress', function(e) {
+        document.getElementById('commentText').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
                 addComment();
+            }
+        });
+
+        // Обработка Enter в формах ответов
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey && e.target.classList.contains('reply-input')) {
+                e.preventDefault();
+                const commentIndex = e.target.id.split('-')[1];
+                addReply(parseInt(commentIndex));
             }
         });
 
