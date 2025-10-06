@@ -17,7 +17,7 @@
 
         .dark-theme {
             --bg-color: #1a1a2e;
-            --text-color: #FF4040;
+            --text-color: #e6e6e6;
             --accent-color: #ff6b6b;
             --card-bg: #16213e;
             --shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -187,6 +187,7 @@
 
         .comment-text {
             line-height: 1.4;
+            color: var(--text-color);
         }
 
         .comment-date {
@@ -305,6 +306,14 @@
             }
         }
 
+        // Загрузка сохранённого имени
+        function loadSavedName() {
+            const savedName = localStorage.getItem('lastUserName');
+            if (savedName) {
+                document.getElementById('commentName').value = savedName;
+            }
+        }
+
         // Система комментариев
         function loadComments() {
             const savedComments = localStorage.getItem('radioComments');
@@ -327,6 +336,9 @@
                 return;
             }
 
+            // Сохраняем имя для будущего использования
+            localStorage.setItem('lastUserName', commentName);
+
             const commentsList = document.getElementById('commentsList');
             const commentDiv = document.createElement('div');
             commentDiv.className = 'comment';
@@ -339,8 +351,9 @@
                 <div class="comment-date">${timestamp}</div>
             `;
             
-            commentsList.appendChild(commentDiv);
-            document.getElementById('commentName').value = '';
+            // Добавляем комментарий в начало списка
+            commentsList.insertBefore(commentDiv, commentsList.firstChild);
+            
             document.getElementById('commentText').value = '';
             
             // Сохраняем комментарии в localStorage
@@ -357,6 +370,7 @@
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             loadTheme();
+            loadSavedName();
             loadComments();
         });
     </script>
