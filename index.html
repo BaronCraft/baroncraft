@@ -127,18 +127,28 @@
             margin-bottom: 30px;
         }
 
-        .comment-input {
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .name-input, .comment-input {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
-            resize: vertical;
-            min-height: 80px;
             background: var(--bg-color);
             color: var(--text-color);
+        }
+
+        .name-input {
             margin-bottom: 10px;
+        }
+
+        .comment-input {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .comment-submit {
@@ -177,6 +187,12 @@
 
         .comment-text {
             line-height: 1.4;
+        }
+
+        .comment-date {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
         }
 
         footer {
@@ -244,7 +260,12 @@
         <div class="comments-section">
             <h3 class="comments-title">Обсуждение</h3>
             <div class="comment-form">
-                <textarea class="comment-input" placeholder="Оставьте ваш комментарий..." id="commentText"></textarea>
+                <div class="form-group">
+                    <input type="text" class="name-input" placeholder="Ваше имя" id="commentName">
+                </div>
+                <div class="form-group">
+                    <textarea class="comment-input" placeholder="Оставьте ваш комментарий..." id="commentText"></textarea>
+                </div>
                 <button class="comment-submit" onclick="addComment()">Отправить</button>
             </div>
             <div class="comments-list" id="commentsList">
@@ -293,23 +314,33 @@
         }
 
         function addComment() {
+            const commentName = document.getElementById('commentName').value.trim();
             const commentText = document.getElementById('commentText').value.trim();
-            if (!commentText) return;
+            
+            if (!commentName) {
+                alert('Пожалуйста, введите ваше имя');
+                return;
+            }
+            
+            if (!commentText) {
+                alert('Пожалуйста, введите комментарий');
+                return;
+            }
 
             const commentsList = document.getElementById('commentsList');
             const commentDiv = document.createElement('div');
             commentDiv.className = 'comment';
             
-            const authorName = 'Слушатель'; // Можно добавить систему имен
             const timestamp = new Date().toLocaleString();
             
             commentDiv.innerHTML = `
-                <div class="comment-author">${authorName}</div>
+                <div class="comment-author">${commentName}</div>
                 <div class="comment-text">${commentText}</div>
-                <div style="font-size: 0.8em; opacity: 0.7; margin-top: 5px;">${timestamp}</div>
+                <div class="comment-date">${timestamp}</div>
             `;
             
             commentsList.appendChild(commentDiv);
+            document.getElementById('commentName').value = '';
             document.getElementById('commentText').value = '';
             
             // Сохраняем комментарии в localStorage
