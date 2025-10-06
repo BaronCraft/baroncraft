@@ -191,6 +191,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            margin-bottom: 20px;
         }
 
         .comment {
@@ -222,6 +223,44 @@
             font-size: 0.8em;
             opacity: 0.7;
             margin-top: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .page-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-info {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin: 0 10px;
         }
 
         footer {
@@ -308,6 +347,15 @@
             .comment {
                 padding: 15px;
             }
+
+            .pagination {
+                gap: 5px;
+            }
+
+            .page-btn {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -347,6 +395,11 @@
             <div class="comments-list" id="commentsList">
                 <!-- Комментарии будут добавляться здесь -->
             </div>
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="page-btn" onclick="changePage(-1)" id="prevBtn">← Назад</button>
+                <span class="page-info" id="pageInfo">Страница 1 из 1</span>
+                <button class="page-btn" onclick="changePage(1)" id="nextBtn">Вперед →</button>
+            </div>
         </div>
     </main>
 
@@ -357,6 +410,10 @@
     <script type="text/javascript" src="https://player.radioking.io/scripts/iframe.bundle.js"></script>
     
     <script>
+        let currentPage = 1;
+        const commentsPerPage = 10;
+        let allComments = [];
+
         // Загрузка темы из localStorage
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme');
@@ -389,14 +446,73 @@
             }
         }
 
-        // Система комментариев
+        // Загрузка комментариев
         function loadComments() {
             const savedComments = localStorage.getItem('radioComments');
             if (savedComments) {
-                document.getElementById('commentsList').innerHTML = savedComments;
+                allComments = JSON.parse(savedComments);
+                displayCurrentPage();
             }
         }
 
+        // Сохранение комментариев
+        function saveComments() {
+            localStorage.setItem('radioComments', JSON.stringify(allComments));
+        }
+
+        // Отображение текущей страницы
+        function displayCurrentPage() {
+            const commentsList = document.getElementById('commentsList');
+            const pagination = document.getElementById('pagination');
+            
+            // Очищаем список
+            commentsList.innerHTML = '';
+            
+            // Вычисляем индексы для текущей страницы
+            const startIndex = (currentPage - 1) * commentsPerPage;
+            const endIndex = startIndex + commentsPerPage;
+            const pageComments = allComments.slice(startIndex, endIndex);
+            
+            // Добавляем комментарии на страницу
+            pageComments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.innerHTML = `
+                    <div class="comment-author">${comment.name}</div>
+                    <div class="comment-text">${comment.text}</div>
+                    <div class="comment-date">${comment.date}</div>
+                `;
+                commentsList.appendChild(commentDiv);
+            });
+            
+            // Обновляем пагинацию
+            const totalPages = Math.ceil(allComments.length / commentsPerPage);
+            document.getElementById('pageInfo').textContent = `Страница ${currentPage} из ${totalPages}`;
+            
+            // Показываем/скрываем пагинацию
+            if (allComments.length > commentsPerPage) {
+                pagination.style.display = 'flex';
+            } else {
+                pagination.style.display = 'none';
+            }
+            
+            // Обновляем состояние кнопок
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+
+        // Смена страницы
+        function changePage(direction) {
+            const totalPages = Math.ceil(allComments.length / commentsPerPage);
+            const newPage = currentPage + direction;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                displayCurrentPage();
+            }
+        }
+
+        // Добавление комментария
         function addComment() {
             const commentName = document.getElementById('commentName').value.trim();
             const commentText = document.getElementById('commentText').value.trim();
@@ -414,25 +530,25 @@
             // Сохраняем имя для будущего использования
             localStorage.setItem('lastUserName', commentName);
 
-            const commentsList = document.getElementById('commentsList');
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment';
+            // Создаем новый комментарий
+            const newComment = {
+                name: commentName,
+                text: commentText,
+                date: new Date().toLocaleString()
+            };
+
+            // Добавляем комментарий в начало массива
+            allComments.unshift(newComment);
             
-            const timestamp = new Date().toLocaleString();
+            // Сбрасываем на первую страницу при добавлении нового комментария
+            currentPage = 1;
             
-            commentDiv.innerHTML = `
-                <div class="comment-author">${commentName}</div>
-                <div class="comment-text">${commentText}</div>
-                <div class="comment-date">${timestamp}</div>
-            `;
+            // Сохраняем и отображаем
+            saveComments();
+            displayCurrentPage();
             
-            // Добавляем комментарий в начало списка
-            commentsList.insertBefore(commentDiv, commentsList.firstChild);
-            
+            // Очищаем поле комментария
             document.getElementById('commentText').value = '';
-            
-            // Сохраняем комментарии в localStorage
-            localStorage.setItem('radioComments', commentsList.innerHTML);
         }
 
         // Обработка отправки по Enter
